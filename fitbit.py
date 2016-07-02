@@ -134,7 +134,7 @@ class Fitbit():
             print "The access token you provided has been expired let me refresh that for you."
             # Refresh the access token with the refresh token if expired. Access tokens should be good for 1 hour.
             token = self.RefAccessToken(token)
-            self.ApiCall(token, apiCall)
+            return self.ApiCall(token, apiCall)
         else:
             raise Exception("Something went wrong requesting (%s): %s" % (resp['errors'][0]['errorType'], resp['errors'][0]['message']))
 
