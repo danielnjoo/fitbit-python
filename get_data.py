@@ -1,4 +1,5 @@
-import fitbit, json, datetime
+import fitbit, json
+from datetime import datetime, timedelta
 
 tokenfile = "user_settings.txt"
 z = fitbit.Fitbit();
@@ -29,12 +30,15 @@ json.dump(token, open(tokenfile,'w'))
 # Do something with the response
 print ("\nWelcome %s!\n" % response['user']['displayName'])
 
-now = datetime.datetime.now()
-date = now.strftime("%Y-%m-%d")
+now = datetime.now()
+yest = now - timedelta(days=1)
+date = yest.strftime("%Y-%m-%d")
+
+print('\nDownloading yesterday\'s data\n')
 
 summaryData = z.ApiCall(token, f'/1/user/-/activities/date/{date}.json')
-json.dump(summaryData, open(f'{date}.json','w'), indent=4)
+json.dump(summaryData, open(f'data/{date}.json','w'), indent=4)
 weightData = z.ApiCall(token, f'/1/user/-/body/log/weight/date/{date}.json')
-json.dump(weightData, open(f'{date}-weight.json','w'), indent=4)
+json.dump(weightData, open(f'data/{date}-weight.json','w'), indent=4)
 sleepData = z.ApiCall(token, f'/1/user/-/sleep/date/{date}.json')
-json.dump(sleepData, open(f'{date}-sleep.json','w'), indent=4)
+json.dump(sleepData, open(f'data/{date}-sleep.json','w'), indent=4)
