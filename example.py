@@ -11,9 +11,9 @@ except IOError:
     # If not generate a new file
     # Get the authorization URL for user to complete in browser.
     auth_url = z.GetAuthorizationUri()
-    print "Please visit the link below and approve the app:\n %s" % auth_url
+    print ("Please visit the link below and approve the app:\n %s" % auth_url) ## CHANGES MADE HERE
     # Set the access code that is part of the arguments of the callback URL FitBit redirects to.
-    access_code = raw_input("Please enter code (from the URL you were redirected to): ")
+    access_code = input("Please enter code (from the URL you were redirected to): ")
     # Use the temporary access code to obtain a more permanent pair of tokens
     token = z.GetAccessToken(access_code)
     # Save the token to a file
@@ -28,4 +28,8 @@ token = response['token']
 json.dump(token, open(tokenfile,'w'))
 
 # Do something with the response
-print "Welcome %s!" % response['user']['displayName']
+print ("Welcome %s!" % response['user']['displayName'])
+
+
+response = z.ApiCall(token, '/1/user/-/activities/log/steps/date/today/7d.json')
+print(response)

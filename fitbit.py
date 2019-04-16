@@ -9,14 +9,21 @@ Most of the code has been adapted from: https://groups.google.com/group/fitbit-a
 10/22/2015 - JG - Removed use of oauth2 library (singing is not necessary anymore),
                   updated to use /oauth2/ authentication infrastructure to get access to more stats.
 """
-import os, base64, requests, urllib
+import os, base64, requests, urllib, json
 
 class Fitbit():
 
-    # All information must be as on the https://dev.fitbit.com/apps page.
-    CLIENT_ID     = ''
-    CLIENT_SECRET = ''
-    REDIRECT_URI  = ''
+    # All information must be as on the https://dev.fitbit.com/apps page.ªª
+    REDIRECT_URI  = 'https://127.0.0.1:8080/'
+
+    try:
+        with open('API_keys.json') as json_file:
+            data = json.load(json_file)
+            CLIENT_ID = data.CLIENT_ID
+            CLIENT_SECRET = data.CLIENT_SECRET
+    except IOError:
+        print("\n File not found\n")
+
 
     # Decide which information the FitBit.py should have access to.
     # Options: 'activity', 'heartrate', 'location', 'nutrition',
