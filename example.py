@@ -1,7 +1,6 @@
-import fitbit, json
+import fitbit, json, datetime
 
 tokenfile = "user_settings.txt"
-
 z = fitbit.Fitbit();
 
 # Try to read existing token pair
@@ -28,8 +27,14 @@ token = response['token']
 json.dump(token, open(tokenfile,'w'))
 
 # Do something with the response
-print ("Welcome %s!" % response['user']['displayName'])
+print ("\nWelcome %s!\n" % response['user']['displayName'])
 
+now = datetime.datetime.now()
+date = now.strftime("%Y-%m-%d")
 
-response = z.ApiCall(token, '/1/user/-/activities/log/steps/date/today/7d.json')
-print(response)
+summaryData = z.ApiCall(token, f'/1/user/-/activities/date/{date}.json')
+json.dump(summaryData, open(f'{date}.json','w'), indent=4)
+weightData = z.ApiCall(token, f'/1/user/-/body/log/weight/date/{date}.json')
+json.dump(weightData, open(f'{date}-weight.json','w'), indent=4)
+sleepData = z.ApiCall(token, f'/1/user/-/sleep/date/{date}.json')
+json.dump(sleepData, open(f'{date}-sleep.json','w'), indent=4)
