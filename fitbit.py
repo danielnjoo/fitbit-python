@@ -85,8 +85,8 @@ class Fitbit():
     # Get new tokens based if authentication token is expired
     def RefAccessToken(self, token):
 
-        # Construct the authentication header
-        auth_header = base64.b64encode(self.CLIENT_ID + ':' + self.CLIENT_SECRET)
+        # Construct the authentication header ## CHANGES MADE HERE
+        auth_header = base64.urlsafe_b64encode((self.CLIENT_ID + ':' + self.CLIENT_SECRET).encode('UTF-8')).decode('ascii')
         headers = {
             'Authorization': 'Basic %s' % auth_header,
             'Content-Type' : 'application/x-www-form-urlencoded'
