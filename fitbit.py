@@ -19,8 +19,8 @@ class Fitbit():
     try:
         with open('API_keys.json') as json_file:
             data = json.load(json_file)
-            CLIENT_ID = data.CLIENT_ID
-            CLIENT_SECRET = data.CLIENT_SECRET
+            CLIENT_ID = data["CLIENT_ID"]
+            CLIENT_SECRET = data["CLIENT_SECRET"]
     except IOError:
         print("\n File not found\n")
 
@@ -38,7 +38,7 @@ class Fitbit():
 
     def GetAuthorizationUri(self):
 
-        # Parameters for authorization, make sure to select 
+        # Parameters for authorization, make sure to select
         params = {
             'client_id': self.CLIENT_ID,
             'response_type':  'code',
@@ -47,14 +47,13 @@ class Fitbit():
         }
 
         # Encode parameters and construct authorization url to be returned to user.
-        urlparams = urllib.urlencode(params)
+        urlparams = urllib.parse.urlencode(params)
         return "%s?%s" % (self.AUTHORIZE_URL, urlparams)
 
     # Tokes are requested based on access code. Access code must be fresh (10 minutes)
     def GetAccessToken(self, access_code):
-
-        # Construct the authentication header
-        auth_header = base64.b64encode(self.CLIENT_ID + ':' + self.CLIENT_SECRET)
+        # Construct the authentication header ## CHANGES MADE HERE
+        auth_header = base64.urlsafe_b64encode((self.CLIENT_ID + ':' + self.CLIENT_SECRET).encode('UTF-8')).decode('ascii')
         headers = {
             'Authorization': 'Basic %s' % auth_header,
             'Content-Type' : 'application/x-www-form-urlencoded'
@@ -138,10 +137,9 @@ class Fitbit():
         if status_code == 200:
             return resp
         elif status_code == 401:
-            print "The access token you provided has been expired let me refresh that for you."
+            print ("The access token you provided has been expired let me refresh that for you.") ## CHANGES MADE HERE
             # Refresh the access token with the refresh token if expired. Access tokens should be good for 1 hour.
             token = self.RefAccessToken(token)
             return self.ApiCall(token, apiCall)
         else:
             raise Exception("Something went wrong requesting (%s): %s" % (resp['errors'][0]['errorType'], resp['errors'][0]['message']))
-
